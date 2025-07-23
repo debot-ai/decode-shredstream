@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package shredstream;
+
+service ShredstreamProxy {
+  rpc SubscribeEntries(SubscribeEntriesRequest) returns (stream SlotEntry);
+}
+
+message SubscribeEntriesRequest {
+}
+
+message SlotEntry {
+  uint64 slot = 1;
+  bytes entries = 2;
+} 
