@@ -1,5 +1,5 @@
 [package]
-name = "examples"
+name = "app"
 edition = "2021"
 publish = false
 
@@ -10,6 +10,6 @@ jito-protos = { path = "../jito_protos" }
 solana-entry = { workspace = true }
 tokio = { version = "1", features = ["full"] }
 
-[[example]]
+[[bin]]
 name = "deshred"
 path = "deshred.rs"

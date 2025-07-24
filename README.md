@@ -23,20 +23,48 @@ See more at https://docs.jito.wtf/lowlatencytxnfeed/
 - Rust 1.70+ 
 - Cargo
 
-### 编译步骤
+### 本地编译
 
+#### macOS (Apple Silicon)
 ```bash
-# 克隆项目
-git clone <repository-url>
-cd shredstream-proxy
-
-# 编译发布版本
+# 编译 macOS ARM64 版本
 cargo build --release --example deshred
 ```
 
+#### Linux x86_64
+```bash
+# 在 Linux x86_64 系统上编译
+cargo build --release --example deshred
+```
+
+### 交叉编译 (Linux x86_64)
+
+由于架构差异，在 Apple Silicon Mac 上编译会生成 ARM64 架构的二进制文件。要在 CentOS 9 等 x86_64 Linux 系统上运行，可以使用以下方法：
+
+#### 方法 1: 使用 Docker 交叉编译脚本
+```bash
+# 运行交叉编译脚本
+chmod +x build-linux.sh
+./build-linux.sh
+```
+
+#### 方法 2: 手动 Docker 编译
+```bash
+# 使用 Docker 进行交叉编译
+docker run --rm -v "$(pwd):/app" -w /app rust:1.84-slim bash -c "
+    apt-get update && apt-get install -y build-essential pkg-config libssl-dev
+    cargo build --release --example deshred
+    cp target/release/examples/deshred deshred-linux-x86_64
+    chmod +x deshred-linux-x86_64
+"
+```
+
+### 编译输出
+
 编译完成后，二进制文件将生成在：
 ```
-target/release/examples/deshred
+target/release/examples/deshred          # macOS ARM64 版本
+deshred-linux-x86_64                     # Linux 版本 (如果使用交叉编译)
 ```
 
 ## 使用方法
@@ -52,6 +80,29 @@ target/release/examples/deshred
 
 # 查看帮助信息
 ./target/release/examples/deshred --help
+```
+
+### 架构兼容性说明
+
+⚠️ **重要提示**: 由于架构差异，在不同平台上编译的二进制文件可能无法在其他平台上运行：
+
+- **Apple Silicon Mac**: 编译生成 ARM64 架构二进制文件
+- **Intel Mac**: 编译生成 x86_64 架构二进制文件  
+- **Linux x86_64**: 编译生成 x86_64 架构二进制文件
+
+**解决方案**:
+1. 在目标平台上直接编译
+2. 使用 Docker 容器运行 (推荐)
+3. 使用交叉编译 (需要额外配置)
+
+### Docker 运行方式 (推荐)
+
+```bash
+# 创建 Docker 镜像
+docker build -f Dockerfile.simple -t shredstream .
+
+# 运行容器
+docker run --rm shredstream --host 172.245.211.10:8002
 ```
 
 ### 命令行参数
