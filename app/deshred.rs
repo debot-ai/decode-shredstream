@@ -9,8 +9,7 @@ use clap::Parser;
 #[command(name = "deshred")]
 #[command(about = "连接到 shredstream 代理服务器并处理 entries")]
 struct Args {
-    /// 服务器地址 (例如: 172.245.211.10:8002)
-    #[arg(long, default_value = "172.245.211.10:8002")]
+    #[arg(long, default_value = "127.0.0.1:8002")]
     host: String,
 }
 
